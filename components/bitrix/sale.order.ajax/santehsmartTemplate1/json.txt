@@ -1,0 +1,1 @@
+{"partner_ID":"91653","alt_partner_ID":"91653","comment":"","is_second":"N","products":{"123719":{"quantity":1,"price":"5664.0000"}}}

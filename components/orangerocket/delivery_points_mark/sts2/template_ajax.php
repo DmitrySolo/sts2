@@ -1,0 +1,1 @@
+<div class="geoTarget__points"><span class="geoTarget__pointsCount"><?=$arResult['ctn']?></span><a class="geoTarget__pointsDesc" href="/punkty-vydachi/"><?=$arResult['pnkt']?> выдачи</a></div>
