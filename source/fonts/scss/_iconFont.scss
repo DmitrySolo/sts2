@@ -27,7 +27,7 @@
 @function icon-char($filename) {
   $char: "";
 
-  @if $filename == right {
+  @if $filename == placeholder {
   $char: "\E001";
 }
 
@@ -45,6 +45,6 @@
 }
 }
 
-.icon-right {
-  @include icon(right);
+.icon-placeholder {
+  @include icon(placeholder);
 }

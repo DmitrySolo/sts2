@@ -16,8 +16,6 @@ if (empty($arResult))
 	return;
 ?>
 
-<ul class="top-menu">
 <?foreach($arResult as $itemIdex => $arItem):?>
-	<li><a href="<?=$arItem["LINK"]?>"><?=$arItem["TEXT"]?></a></li>
+	<li class="popup__menuItem"><a class="material" href="<?=$arItem["LINK"]?>"><?=$arItem["TEXT"]?></a></li>
 <?endforeach;?>
-</ul>

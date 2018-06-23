@@ -32,11 +32,11 @@ $arBasketJSParams = array(
 
 <div class="page page--Cart">
     <div class="page__content page__contentundefined" data-qcontent="level__page">
-        <div class="group">
-            <div class="col col-12-tl">
-                <h1 class="page__title">Корзина</h1>
-            </div>
-        </div>
+<!--        <div class="group">-->
+<!--            <div class="col col-12-tl">-->
+<!--                <h1 class="page__title">Корзина</h1>-->
+<!--            </div>-->
+<!--        </div>-->
         <main><!-- split modules/cartPage -->
             <script type="text/javascript">
                 var basketJSParams = <?=CUtil::PhpToJSObject($arBasketJSParams);?>

@@ -23,11 +23,12 @@ if (empty($arResult))
     <ul class="catalogList__categoryList" id="js_categories">
         <? $i = 1?>
         <?foreach($arResult["ALL_ITEMS_ID"] as $itemIdLevel_1=>$arItemsLevel_2):?> <!-- first level-->
-            <li class="catalogList__categoryItem" id="js_showSub__<?=$i?>">
-                <span><a href="<?=$arResult["ALL_ITEMS"][$itemIdLevel_1]["LINK"]?>"><?=$arResult["ALL_ITEMS"][$itemIdLevel_1]["TEXT"]?></a></span>
+            <li >
+                <a class="catalogList__categoryItem" id="js_showSub__<?=$i?>" href="<?=$arResult["ALL_ITEMS"][$itemIdLevel_1]["LINK"]?>"><?=$arResult["ALL_ITEMS"][$itemIdLevel_1]["TEXT"]?>
                 <svg class="icon icon--catalog" data-qcontent="element__ICONS__MAIN-SVG-use">
-                    <use xlink:href="#to-right">              </use>
+                    <use xlink:href="#to-right"> </use>
                 </svg>
+                </a>
             </li>
             <ul class="catalogList__categorySublist">
                 <?if (is_array($arItemsLevel_2) && !empty($arItemsLevel_2)):?>

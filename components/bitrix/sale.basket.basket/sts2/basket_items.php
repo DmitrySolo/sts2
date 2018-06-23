@@ -52,7 +52,7 @@ if ($normalCount > 0):
                                                 </div>
                                             </a></div>
                                         <div class="col col-4-tp"><?if($old_price > 0):?><span class="productBadge productBadge--sale"
-                                                                        data-qcontent="element__buttons__productBadge">Распродажа<?=$old_price?></span><br/><?endif?><a
+                                                                        data-qcontent="element__buttons__productBadge">Распродажа</span><br/><?endif?><a
                                                     class="productInline__link"
                                                     href="<?= $arItem["DETAIL_PAGE_URL"] ?>"><span
                                                         class="productInline__section--sku">Код товара: <span><?= $arItem["PRODUCT_XML_ID"] ?></span></span>
@@ -158,10 +158,19 @@ if ($normalCount > 0):
                     <div class="cartPage__cartCheck">
                         <div class="cuponInput"
                              id="coupons_block"<?= (isPartnerClient() ? ' style="display:none"' : '') ?>>
-                            <label for="cuponInput">Введите код купона для скидки:
+                            <label for="coupon" class="cuponInput__label--message <?
+                            if($arResult['COUPON_LIST'][0]['STATUS'] == DiscountCouponsManager::STATUS_APPLYED):
+                                ?>success<?else:?>error<?endif;?>"<?if (empty($arResult['COUPON_LIST'])):?> style="display: none"<?endif;?>>
+                                Купон <span><?if(empty($arResult['COUPON_LIST'])):?>не найден<?else: echo $arResult['COUPON_LIST'][0]["CHECK_CODE_TEXT"][0]; endif;?></span>:
+                            </label>
+                            <label for="coupon" class="cuponInput__label"<?if (!empty($arResult['COUPON_LIST'])):?> style="display: none"<?endif;?>>Введите код купона для скидки:
                                 <input <?//id="cuponInput"
                                 ?> name="COUPON" id="coupon" type="text" maxlength="8"
+                                   onchange="enterCoupon();"
+                                   onkeydown="return enterCouponKeyDown(event);"
+                                   autocomplete="off"
                                    data-qcontent="element__INPUTS__cuponInput"/>
+                                <button class="cuponInput__button" type="button">OK</button>
                             </label><?
                             if (!empty($arResult['COUPON_LIST'])) {
                                 foreach ($arResult['COUPON_LIST'] as $oneCoupon) {
@@ -182,19 +191,21 @@ if ($normalCount > 0):
                                                                             class="<? echo $couponClass; ?>"><span
                                             class="<? echo $couponClass; ?>"
                                             data-coupon="<? echo htmlspecialcharsbx($oneCoupon['COUPON']); ?>"></span>
-                                    <div class="bx_ordercart_coupon_notes"><?
-                                        if (isset($oneCoupon['CHECK_CODE_TEXT'])) {
-                                            echo(is_array($oneCoupon['CHECK_CODE_TEXT']) ? implode('<br>', $oneCoupon['CHECK_CODE_TEXT']) : $oneCoupon['CHECK_CODE_TEXT']);
-                                        }
-                                        ?></div></div><?
+                                    </div><?
                                 }
                                 unset($couponClass, $oneCoupon);
                             }
                             ?>
                         </div>
+                        <div class="cartPage__summtitle--extra"<?if(!$arResult["DISCOUNT_PRICE_ALL"]):?> style="display: none"<?endif;?>>
+                            <h6 class="cartPage__summtitle">Цена без скидки:</h6><span
+                                    id="PRICE_WITHOUT_DISCOUNT"><?= $arResult["PRICE_WITHOUT_DISCOUNT"] ?></span>
+                            <h6 class="cartPage__summtitle">Экономия:</h6><span
+                                    id="DISCOUNT_PRICE_ALL_FORMATED"><?= $arResult["DISCOUNT_PRICE_ALL_FORMATED"] ?></span>
+                        </div>
                         <h5 class="cartPage__summtitle">Итого:</h5><span class="cartPage__summ"
-                                                                         id="allSum_FORMATED"><?= str_replace(" ", "&nbsp;", $arResult["allSum_FORMATED"]) ?></span>
-                        <button class="toOrder active notEdit makeOrder" onclick="checkOut(); return false;"
+                                                                         id="allSum_FORMATED"><?= $arResult["allSum_FORMATED"] ?></span>
+                        <button class="toOrder active notEdit makeOrder" onclick="checkOut(<?= (isPartnerClient() ? "'Y'" : '') ?>); return false;"
                                 data-qcontent="element__buttons__toOrder">Оформить заказ
                         </button>
                         <a class="actionLink returnToBuy icon-to-left " href="/"

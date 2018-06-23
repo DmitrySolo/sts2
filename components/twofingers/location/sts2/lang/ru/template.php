@@ -3,7 +3,7 @@
 	$MESS['TF_LOCATION_CHOOSE'] = "выберите город";
 	$MESS['TF_LOCATION_CHANGE'] = "изменить";
 	$MESS['TF_LOCATION_NOT_YOUR'] = "Не ваш город?";
-	$MESS['TF_LOCATION_CHECK_CITY'] = "Города, в которых есть пункты выдачи:";
+	$MESS['TF_LOCATION_CHECK_CITY'] = "Выберите Ваш город или начните вводить в поле";
 	$MESS['TF_LOCATION_YOUR_COUNTRY'] = "Ваша страна";
 	$MESS['TF_LOCATION_YOUR_CITY'] = "Ваша страна";
 ?>

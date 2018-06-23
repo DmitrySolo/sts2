@@ -21,13 +21,18 @@ if ($arParams['POSITION_FIXED'] == 'Y')
 </script>
 
 <div id="<?=$cartId?>" class="<?=$cartStyle?>">
-	<?$frame  =  new  \Bitrix\Main\Page\FrameHelper( $cartStyle ); 
+	<?$frame  =  new  \Bitrix\Main\Page\FrameHelper( $cartStyle );
 	$frame->begin()?>
 		<?require(realpath(dirname(__FILE__)).'/ajax_template.php');?>
 	<?$frame->beginStub()?>
-        <div class="topBar__cart">
-            <?=GetMessage('TSB1_CART_LOADING')?>
-		</div>
+        <button class="cart__content" data-qcontent="module__cart">
+            <span class="cart__icon">
+                    <svg class="icon icon--topBar" data-qcontent="element__ICONS__MAIN-SVG-use">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-s">    </use>
+                    </svg>
+            </span>
+            <span>...</span>
+        </button>
 	<?$frame->end()?>
 </div>
 

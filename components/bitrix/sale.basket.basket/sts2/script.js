@@ -531,7 +531,27 @@ function updateBasketTable(basketItemId, res)
 	// update total basket values
 	if (!!res.BASKET_DATA)
 	{
-		if (BX('allWeight_FORMATED'))
+	    //console.log(res);
+	    if(res['BASKET_DATA']['COUPON_LIST'].length > 0){
+	        $('.cuponInput__label').hide();
+	        $('.cuponInput__label--message').show().removeClass('success').addClass('error').find('span').html(res['BASKET_DATA']['COUPON_LIST'][0]['CHECK_CODE_TEXT'][0]);
+	        if(res['VALID_COUPON']) $('.cuponInput__label--message.error').removeClass('error').addClass('success');
+        }else{
+            $('.cuponInput__label').show();
+            $('.cuponInput__label--message').hide();
+        }
+
+        if(res['BASKET_DATA']['DISCOUNT_PRICE_ALL']){
+            $('.cartPage__summtitle--extra').show();
+            if (BX('PRICE_WITHOUT_DISCOUNT'))
+                BX('PRICE_WITHOUT_DISCOUNT').innerHTML = res['BASKET_DATA']['PRICE_WITHOUT_DISCOUNT'].replace(/\s/g, '&nbsp;');
+            if (BX('DISCOUNT_PRICE_ALL_FORMATED'))
+                BX('DISCOUNT_PRICE_ALL_FORMATED').innerHTML = res['BASKET_DATA']['DISCOUNT_PRICE_ALL_FORMATED'].replace(/\s/g, '&nbsp;');
+        }else{
+            $('.cartPage__summtitle--extra').hide();
+        }
+
+        if (BX('allWeight_FORMATED'))
 			BX('allWeight_FORMATED').innerHTML = res['BASKET_DATA']['allWeight_FORMATED'].replace(/\s/g, '&nbsp;');
 
 		if (BX('allSum_wVAT_FORMATED'))
@@ -543,8 +563,8 @@ function updateBasketTable(basketItemId, res)
 		if (BX('allSum_FORMATED'))
 			BX('allSum_FORMATED').innerHTML = res['BASKET_DATA']['allSum_FORMATED'].replace(/\s/g, '&nbsp;');
 
-		if (BX('PRICE_WITHOUT_DISCOUNT'))
-			BX('PRICE_WITHOUT_DISCOUNT').innerHTML = (res['BASKET_DATA']['PRICE_WITHOUT_DISCOUNT'] != res['BASKET_DATA']['allSum_FORMATED']) ? res['BASKET_DATA']['PRICE_WITHOUT_DISCOUNT'].replace(/\s/g, '&nbsp;') : '';
+		//if (BX('PRICE_WITHOUT_DISCOUNT'))
+		//	BX('PRICE_WITHOUT_DISCOUNT').innerHTML = (res['BASKET_DATA']['PRICE_WITHOUT_DISCOUNT'] != res['BASKET_DATA']['allSum_FORMATED']) ? res['BASKET_DATA']['PRICE_WITHOUT_DISCOUNT'].replace(/\s/g, '&nbsp;') : '';
 
 		BX.onCustomEvent('OnBasketChange');
 	}
@@ -878,10 +898,12 @@ function modalAlert(msg,st1button,nd2button) {
     }).show();
 }
 
-function checkOut()
+function checkOut(isPartner)
 {
 	var cart_content = {};
 	var cart_names = {};
+
+	$('.makeOrder').html('<img src="/bitrix/templates/STS2/source/images/dotsLoader.svg" />');
 
 	$('.cartProduct__content .productInline__content').each(function(){
 		var sku=$(this).find('.productInline__section--sku span').text();
@@ -891,21 +913,30 @@ function checkOut()
 		cart_names[sku]=name;
 	});
 
+	var is_partner = (isPartner == 'Y') ? 'Y' : 'N';
+
 	$.post( "/bitrix/templates/.default/components/bitrix/catalog.item/.default"
-		+ "/ajax.php", {"cart_content":cart_content,"cart_names":cart_names} ,function( msg ) {
+		+ "/ajax.php", {"cart_content":cart_content,"cart_names":cart_names,"is_partner":is_partner} ,function( msg ) {
 		if(msg.status == 'ok'){
 			if(msg.response.STRING == 'NOT_FOUND'){
-                modalAlert(msg.response.COMMENT,{
-                    name:"Да, добавить позиции, отсутствующие на складе, в заявку",
-                    callback:function(){
-                        if (!!BX('coupon'))
-                            BX('coupon').disabled = true;
-                        BX("basket_form").submit();
-                    }
-                },{
-                    name:"Нет, оставить в заявке только позиции, которые есть в наличии(N/A)",
-                    callback:function(){}
-                });
+                $('.makeOrder').html('Оформить заказ');
+
+                if(isPartner == 'Y')
+                    modalAlert(msg.response.COMMENT,{
+                        name:"Да, добавить позиции, отсутствующие на складе, в заявку",
+                        callback:function(){
+                            $('.makeOrder').html('<img src="/bitrix/templates/STS2/source/images/dotsLoader.svg" />');
+
+                            if (!!BX('coupon'))
+                                BX('coupon').disabled = true;
+                            BX("basket_form").submit();
+                        }
+                    },{
+                        name:"Нет, оставить в заявке только позиции, которые есть в наличии(N/A)",
+                        callback:function(){}
+                    });
+                else modalAlert(msg.response.COMMENT);
+
 				return;
 			}else{
 				//if(confirm(msg.response.COMMENT)){
@@ -915,7 +946,11 @@ function checkOut()
 				//}
 			}
 		}else{
-			alert("Ошибка");
+            //$('.makeOrder').html('Ошибка');
+			//skip to order
+            if (!!BX('coupon'))
+                BX('coupon').disabled = true;
+            BX("basket_form").submit();
 			return;
 		}
 	}, "json");
@@ -929,6 +964,14 @@ function enterCoupon()
 	var newCoupon = BX('coupon');
 	if (!!newCoupon && !!newCoupon.value)
 		recalcBasketAjax({'coupon' : newCoupon.value});
+}
+
+function enterCouponKeyDown(e) {
+    if(e.keyCode == 13) {
+        enterCoupon();
+        return false;
+    }
+    return true;
 }
 
 // check if quantity is valid
@@ -1220,13 +1263,13 @@ function deleteCoupon(e)
 
 BX.ready(function() {
     ////////////////////RETURN BUTTON
-    var retBtn = document.getElementById('js_return_to_sale');
+    /*var retBtn = document.getElementById('js_return_to_sale');
     console.log(document.referrer);
     var docRef= document.referrer;
     if(docRef.indexOf('cart') + 1) {
         var docRef="/";
     }
-    retBtn.href=docRef;
+    retBtn.href=docRef;*/
   ////////////////////////////
 
 
@@ -1241,6 +1284,9 @@ BX.ready(function() {
 		}
 	}
 	couponBlock = BX('coupons_block');
-	if (!!couponBlock)
-		BX.bindDelegate(couponBlock, 'click', { 'attribute': 'data-coupon' }, BX.delegate(function(e){deleteCoupon(e); }, this));
+	if (!!couponBlock) {
+        BX.bindDelegate(couponBlock, 'click', {'attribute': 'data-coupon'}, BX.delegate(function (e) {
+            deleteCoupon(e);
+        }, this));
+    }
 });

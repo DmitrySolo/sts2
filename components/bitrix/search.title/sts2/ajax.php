@@ -19,7 +19,7 @@ if (empty($arResult["CATEGORIES"]))
                         <?endif;?>
                     </a>
                 </div>
-                <div class="col col-6-tp">
+                <div class="col col-9-tp">
                     <a class="productInline__link" href="<?echo $arItem["URL"]?>"><span class="productInline__section--sku"></span>
 
                         <h6 class="productInline__section--name"><?echo $arItem["NAME"]?></h6>
@@ -39,7 +39,7 @@ if (empty($arResult["CATEGORIES"]))
                                         <span class="productCol__price">
                                             <span class="productCol__oldPrice"><?=$arPrice["PRINT_VALUE"]?> <span class="icon-ruble"></span>
 
-                                            </span><?=$arPrice["PRINT_VALUE"]?> <span class="icon-ruble"></span>
+                                            </span><?=$arPrice["PRINT_VALUE"]?> 
                                         </span>
 
                                         <span class="old"><?=$arPrice["PRINT_VALUE"]?></span>
